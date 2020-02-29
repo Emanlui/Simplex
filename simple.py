@@ -1,32 +1,73 @@
 from tkinter import *
-from tkinter import messagebox
+from tkinter import filedialog as fd
 
-master = Tk()
-master.geometry("500x200")
 
-def close_window():
-    master.destroy()
+# This function let us to check if a string is an integer
+def isint(integer):
+    try:
+        int(integer)
+        return True
+    except ValueError:
+        return False
+
+def secondwindowfunction(first_window, function, constraints):
+    first_window.destroy()
     
-# This is the main function
-def main():
+    second_window = Tk()
+    second_window.geometry("500x200")
+    
 
+# This is the main function
+def firstwindowfunction():
+    first_window = Tk()
+    first_window.geometry("500x200")
+
+
+    # Array of variables
+
+    # Data from the file
+    file_variable = []
+    # The function variables are store here
+    function_array = []
+    # The constraints data is store here
+    constraints_array = []
+
+    # Open the file directory
+    filename = fd.askopenfilename()
+    if filename:
+        # Open the file
+        with open(filename) as file:
+            for i in file:
+                # Loops the file and append it to the file_variable (file data)
+                file_variable.append(i.rstrip())
+    # The first position should be the function variables and we split it to save it in an array
+    function_array = file_variable[0].split()
+    
+    # We loop the file data to store it in the constraints array
+    for i in range(1,len(file_variable)):
+        constraint = file_variable[i].split()
+        constraints_array.append(constraint)
+
+    
     # The labels to be use
-    variableLabel = Label(master, text='How many variables does the problem has? ')
-    constraintsLabel = Label(master, text='How many constraints?')
+    function_label = Label(first_window, text='Function: ' + file_variable[0])
+    constraints_label = Label(first_window, text='Constraints: ')
+    # The labels position
+    function_label.place(x=0, y=0)
+    constraints_label.place(x=0, y=20)
+
+    # Prints the constraints on the window
+    for i in range(1,len(file_variable)):
+        constraints = Label(first_window, text=file_variable[i])
+        constraints.place(x=100, y=i*30)
+        print(file_variable[i])
 
     # The buttton
-    button = Button(master, text="Next", command=close_window)
+    button = Button(first_window, text="Next", command=lambda: secondwindowfunction(first_window, function_array, constraints_array))
+    button.place(x=100, y=0)
 
-    # The input of the user
-    variableEntry = Entry(master, textvariable="variable")
-    constraintsEntry = Entry(master, textvariable="constraint")
+    # This is necesary to open the window
+    first_window.mainloop()
 
-    # The position on the window
-    variableLabel.place(x=0, y=0)
-    constraintsLabel.place(x=0, y=20)
-    button.place(x=50, y=50)
-    variableEntry.place(x=300,y=0)
-    constraintsEntry.place(x=300, y=20)
-    master.mainloop()
 
-main()
+firstwindowfunction()
