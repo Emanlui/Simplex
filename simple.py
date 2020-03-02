@@ -26,14 +26,7 @@ def showfunction(functions):
     plt.savefig('graph.png')
 
 
-def calculate(second_window, matrices, matrix_function):
-
-    # First we need to destroy the previous window, we do not need it anymore
-    second_window.destroy()
-
-    third_window = Tk()
-    third_window.geometry("1500x800")
-    
+def calculatepivots(matrix_function):
     
     column_pivot = 0
     column_number = 0
@@ -50,10 +43,42 @@ def calculate(second_window, matrices, matrix_function):
             row_number = matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot]
             row_pivot = y
     
-    print(row_pivot, column_pivot)
+    res = [row_pivot, column_pivot]
+    return res
+
+def hasnegatives(matrix_function):
+    
+    for x in range(len(matrix_function[0])-1):
+        if matrix_function[len(matrix_function)-1][x] < 0:
+            return True    
+    
+    return False
+
+def makechanges(matrix_function, pivots, matrices):
     
     
-    
+
+def calculate(second_window, matrices, matrix_function):
+
+    # First we need to destroy the previous window, we do not need it anymore
+    second_window.destroy()
+
+    third_window = Tk()
+    third_window.geometry("1500x800")
+
+    if hasnegatives(matrix_function) == True:
+        print('aun hay negativos')
+        
+        
+        matrices.append(matrix_function)
+        pivots = calculatepivots(matrix_function)
+        makechanges(matrix_function, pivots, matrices)
+        
+        
+        
+        
+    else:
+        print('termine') 
     
     third_window.mainloop()
 
@@ -63,7 +88,7 @@ def secondwindowfunction(first_window, matrix_function):
     first_window.destroy()
 
     # All matrix stages
-    matrices= []
+    matrices = []
 
     # Create a second window
     second_window = Tk()
