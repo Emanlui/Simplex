@@ -3,7 +3,7 @@ from tkinter import filedialog as fd
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import ImageTk, Image
-
+import sys
 
 # This function does everything with the graphing
 def showfunction(functions):
@@ -26,10 +26,44 @@ def showfunction(functions):
     plt.savefig('graph.png')
 
 
+def calculate(second_window, matrices, matrix_function):
+
+    # First we need to destroy the previous window, we do not need it anymore
+    second_window.destroy()
+
+    third_window = Tk()
+    third_window.geometry("1500x800")
+    
+    
+    column_pivot = 0
+    column_number = 0
+    row_pivot = 0
+    row_number = sys.maxsize
+    
+    for x in range(len(matrix_function)):
+        if matrix_function[len(matrix_function)-1][x] < column_number:
+            column_number = matrix_function[len(matrix_function)-1][x]
+            column_pivot = x
+    
+    for y in range(len(matrix_function)-1):
+        if matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot] < row_number:
+            row_number = matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot]
+            row_pivot = y
+    
+    print(row_pivot, column_pivot)
+    
+    
+    
+    
+    third_window.mainloop()
+
 def secondwindowfunction(first_window, matrix_function):
 
     # First we need to destroy the first window, we do not need it anymore
     first_window.destroy()
+
+    # All matrix stages
+    matrices= []
 
     # Create a second window
     second_window = Tk()
@@ -56,6 +90,10 @@ def secondwindowfunction(first_window, matrix_function):
     # Place it
     panel.place(x=600, y=10)
     # This is necesary to open the window
+    
+    # The buttton
+    button = Button(second_window, text="Next", command=lambda: calculate(second_window, matrices, matrix_function))
+    button.place(x=100, y=0)
     second_window.mainloop()
 
 
