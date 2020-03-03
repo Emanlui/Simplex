@@ -17,12 +17,38 @@ def showfunction(functions):
     # Adds the range of the X dimension
     x = np.array(range(0, max_number))
 
+    array_of_functions = []
+
     # Adds the linear function to the graph
     for i in range(length_of_matrix-1):
         y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
         plt.plot(x, y)
-
+        array_of_functions.append(y)
     # Saves the image, this is necesary because we need to open it later
+    plt.grid()
+    plt.xlabel('x - axis')
+    plt.ylabel('y - axis')
+    plt.title('The graph of the constraints')
+
+    plt.fill(5, 5, "b")
+
+    # Adds the linear function to the graph
+    for i in range(length_of_matrix - 1):
+        y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
+        plt.plot(x, y)
+        array_of_functions.append(y)
+    # Saves the image, this is necesary because we need to open it later
+    plt.grid()
+    plt.xlabel('x - axis')
+    plt.ylabel('y - axis')
+    plt.title('The graph of the constraints')
+
+    for i in range(0, len(array_of_functions)):
+        for j in range(0, len(array_of_functions)):
+            if i != j:
+                plt.fill_between(x, array_of_functions[i], array_of_functions[j],
+                                 where=((array_of_functions[i] >= 0) & (array_of_functions[j] >= 0)), facecolor='blue',
+                                 alpha=0.5)
     plt.savefig('graph.png')
 
 
@@ -120,6 +146,20 @@ def secondwindowfunction(first_window, matrix_function):
     function_label = Label(second_window, text='Matrix: ')
     function_label.place(x=20, y=10)
 
+    function_label = Label(second_window, text="X")
+    function_label.place(x=80, y=20)
+
+    function_label = Label(second_window, text="Y")
+    function_label.place(x=80*2, y=20)
+
+    for i in range(2,len(matrix_function)+2):
+        print(i)
+        function_label = Label(second_window, text="Z" + str(i-1))
+        function_label.place(x=80 * (i+1), y=20)
+
+    function_label = Label(second_window, text="Result")
+    function_label.place(x=80 * (len(matrix_function)+3), y=20)
+
     # We print the matrix on the screen
     for i in range(len(matrix_function)):
         for j in range(len(matrix_function[i])):
@@ -135,12 +175,12 @@ def secondwindowfunction(first_window, matrix_function):
     # Saves it on a label
     panel = Label(second_window, image=img)
     # Place it
-    panel.place(x=600, y=10)
+    panel.place(x=80, y=250)
     # This is necesary to open the window
     
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(matrices, changes, matrix_function))
-    button.place(x=100, y=0)
+    button.place(x=800, y=450)
     second_window.mainloop()
 
 
