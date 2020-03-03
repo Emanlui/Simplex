@@ -54,33 +54,52 @@ def hasnegatives(matrix_function):
     
     return False
 
-#def makechanges(matrix_function, pivots, matrices):
+def makechanges(matrix_function, pivots, matrices, changes):
     
+    tmp_changes = []
+       
+    #primera linea 
+    pivot_number = matrix_function[pivots[0]][pivots[1]]
+ 
+    string = '1/' + str(matrix_function[pivots[0]][pivots[1]]) + ' en toda la fila ' + str(pivots[0]+1) + '.'
+    tmp_changes.append(string)
     
-
-def calculate(second_window, matrices, matrix_function):
-
-    # First we need to destroy the previous window, we do not need it anymore
-    second_window.destroy()
-
-    third_window = Tk()
-    third_window.geometry("1500x800")
-
-    if hasnegatives(matrix_function) == True:
-        print('aun hay negativos')
+    for x in range(len(matrix_function[0])):
+        matrix_function[pivots[0]][x] = matrix_function[pivots[0]][x] / pivot_number
         
+    #segunda linea
+    
+    for x in range(len(matrix_function)):
+        
+        if x == pivots[0]:
+            continue
+
+        tmp_number = matrix_function[x][0]
+        string = 'Fila ' + str(pivots[0]+1) + ' multiplicado por ' + str(-tmp_number) + ' sumado a la fila ' + str(x+1) + '.'
+        tmp_changes.append(string)
+        
+        for y in range(len(matrix_function[0])):
+            
+            matrix_function[x][y] = matrix_function[x][y] + (-tmp_number * matrix_function[pivots[0]][y])
+    
+    changes.append(tmp_changes)
+
+def calculate(matrices, changes, matrix_function):
+
+    var = hasnegatives(matrix_function)
+
+    while var:
+        
+        print('aun hay negativos')
         
         matrices.append(matrix_function)
         pivots = calculatepivots(matrix_function)
-        makechanges(matrix_function, pivots, matrices)
+        makechanges(matrix_function, pivots, matrices, changes)
+        calculate(matrices, changes, matrix_function)
+        var = hasnegatives(matrix_function)
         
-        
-        
-        
-    else:
-        print('termine') 
-    
-    third_window.mainloop()
+    print('termine') 
+
 
 def secondwindowfunction(first_window, matrix_function):
 
@@ -89,6 +108,9 @@ def secondwindowfunction(first_window, matrix_function):
 
     # All matrix stages
     matrices = []
+    
+    # All changes
+    changes = []
 
     # Create a second window
     second_window = Tk()
@@ -117,7 +139,7 @@ def secondwindowfunction(first_window, matrix_function):
     # This is necesary to open the window
     
     # The buttton
-    button = Button(second_window, text="Next", command=lambda: calculate(second_window, matrices, matrix_function))
+    button = Button(second_window, text="Next", command=lambda: calculate(matrices, changes, matrix_function))
     button.place(x=100, y=0)
     second_window.mainloop()
 
