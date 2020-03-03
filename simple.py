@@ -54,7 +54,7 @@ def hasnegatives(matrix_function):
     
     return False
 
-def makechanges(matrix_function, pivots, matrices):
+#def makechanges(matrix_function, pivots, matrices):
     
     
 
