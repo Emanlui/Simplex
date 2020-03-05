@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import ImageTk, Image
 import sys
+from fractions import Fraction 
+import copy 
 
 # This function does everything with the graphing
 def showfunction(functions):
@@ -87,10 +89,8 @@ def makechanges(matrix_function, matrices, changes):
     #primera linea 
     pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
-    print(pivots[0], pivots[1])
 
     string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0]+1) + '.'
-    print(string)
     tmp_changes.append(string)
     
     for x in range(len(matrix_function[0])):
@@ -113,26 +113,67 @@ def makechanges(matrix_function, matrices, changes):
     
     changes.append(tmp_changes)
 
-def calculate(matrices, changes, matrix_function):
+def thirdwindowfunction(third_window, matrices):
+    
+    if matrices == []:
+        function_label = Label(third_window, text='FIN.')
+        function_label.place(x=400, y=300)
+    
+    else:
+    
+        # This is only the label
+        function_label = Label(third_window, text='Matrix: ')
+        function_label.place(x=20, y=10)
+
+        function_label = Label(third_window, text="X")
+        function_label.place(x=80, y=20)
+
+        function_label = Label(third_window, text="Y")
+        function_label.place(x=80*2, y=20)
+
+        for i in range(2,len(matrices[0])+2):
+            function_label = Label(third_window, text="Z" + str(i-1))
+            function_label.place(x=80 * (i+1), y=20)
+
+        function_label = Label(third_window, text="Result")
+        function_label.place(x=80 * (len(matrices[0])+3), y=20)
+
+        # We print the matrix on the screen
+        for i in range(len(matrices[0])):
+            for j in range(len((matrices[0])[i])):
+                function_label = Label(third_window, text=str(Fraction((matrices[0])[i][j]).limit_denominator()))
+                # The position depends on the i position
+                function_label.place(x=80*(j+1), y=40*(i+1))
+
+        # The buttton
+        button = Button(third_window, text="Next", command=lambda: thirdwindowfunction(third_window, matrices[1:]))
+        button.place(x=600, y=300)
+
+        third_window.mainloop()
+    
+
+def calculate(second_window, matrices, changes, matrix_function):
+
+    second_window.destroy()
+    
+    # Create a second window
+    third_window = Tk()
+    third_window.geometry("700x400")
 
     var = hasnegatives(matrix_function)
 
     while var:
-        
-        print('aun hay negativos')
-        print(matrix_function)
 
-        matrices.append(matrix_function)
+        matrix_tmp = copy.deepcopy(matrix_function)
+        matrices.append(matrix_tmp)
         makechanges(matrix_function, matrices, changes)
         var = hasnegatives(matrix_function)
-        
-    print('termine')
-    print(matrix_function)
     
-    for x in range(len(changes)):
-        for y in range(len(changes[0])):
-            print(changes[x][y])
-
+    matrix_tmp = copy.deepcopy(matrix_function)
+    matrices.append(matrix_tmp)
+    
+    thirdwindowfunction(third_window, matrices)
+    
 
 def secondwindowfunction(first_window, matrix_function):
 
@@ -160,7 +201,6 @@ def secondwindowfunction(first_window, matrix_function):
     function_label.place(x=80*2, y=20)
 
     for i in range(2,len(matrix_function)+2):
-        print(i)
         function_label = Label(second_window, text="Z" + str(i-1))
         function_label.place(x=80 * (i+1), y=20)
 
@@ -186,7 +226,7 @@ def secondwindowfunction(first_window, matrix_function):
     # This is necesary to open the window
     
     # The buttton
-    button = Button(second_window, text="Next", command=lambda: calculate(matrices, changes, matrix_function))
+    button = Button(second_window, text="Next", command=lambda: calculate(second_window, matrices, changes, matrix_function))
     button.place(x=800, y=450)
     second_window.mainloop()
 
