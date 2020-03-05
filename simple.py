@@ -54,14 +54,17 @@ def hasnegatives(matrix_function):
     
     return False
 
-def makechanges(matrix_function, pivots, matrices, changes):
+def makechanges(matrix_function, matrices, changes):
     
     tmp_changes = []
        
     #primera linea 
+    pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
- 
-    string = '1/' + str(matrix_function[pivots[0]][pivots[1]]) + ' en toda la fila ' + str(pivots[0]+1) + '.'
+    print(pivots[0], pivots[1])
+
+    string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0]+1) + '.'
+    print(string)
     tmp_changes.append(string)
     
     for x in range(len(matrix_function[0])):
@@ -74,7 +77,7 @@ def makechanges(matrix_function, pivots, matrices, changes):
         if x == pivots[0]:
             continue
 
-        tmp_number = matrix_function[x][0]
+        tmp_number = matrix_function[x][pivots[1]]
         string = 'Fila ' + str(pivots[0]+1) + ' multiplicado por ' + str(-tmp_number) + ' sumado a la fila ' + str(x+1) + '.'
         tmp_changes.append(string)
         
@@ -91,14 +94,18 @@ def calculate(matrices, changes, matrix_function):
     while var:
         
         print('aun hay negativos')
-        
+        print(matrix_function)
+
         matrices.append(matrix_function)
-        pivots = calculatepivots(matrix_function)
-        makechanges(matrix_function, pivots, matrices, changes)
-        calculate(matrices, changes, matrix_function)
+        makechanges(matrix_function, matrices, changes)
         var = hasnegatives(matrix_function)
         
-    print('termine') 
+    print('termine')
+    print(matrix_function)
+    
+    for x in range(len(changes)):
+        for y in range(len(changes[0])):
+            print(changes[x][y])
 
 
 def secondwindowfunction(first_window, matrix_function):
