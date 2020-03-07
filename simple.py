@@ -113,11 +113,11 @@ def makechanges(matrix_function, matrices, changes):
     
     changes.append(tmp_changes)
 
-def thirdwindowfunction(third_window, matrices):
+def thirdwindowfunction(third_window, matrices, changes):
     
     if matrices == []:
         function_label = Label(third_window, text='FIN.')
-        function_label.place(x=400, y=300)
+        function_label.place(x=700, y=350)
     
     else:
     
@@ -144,21 +144,25 @@ def thirdwindowfunction(third_window, matrices):
                 function_label = Label(third_window, text=str(Fraction((matrices[0])[i][j]).limit_denominator()))
                 # The position depends on the i position
                 function_label.place(x=80*(j+1), y=40*(i+1))
-
+        
+        for x in range(len(changes[0])):
+            function_label = Label(third_window, text=str(changes[0][x]))
+            # The position depends on the i position
+            function_label.place(x=120, y=100*(x+2))
+    
         # The buttton
-        button = Button(third_window, text="Next", command=lambda: thirdwindowfunction(third_window, matrices[1:]))
-        button.place(x=600, y=300)
+        button = Button(third_window, text="Next", command=lambda: thirdwindowfunction(third_window, matrices[1:], changes[1:]))
+        button.place(x=700, y=300)
 
         third_window.mainloop()
     
-
 def calculate(second_window, matrices, changes, matrix_function):
 
     second_window.destroy()
     
     # Create a second window
     third_window = Tk()
-    third_window.geometry("700x400")
+    third_window.geometry("900x600")
 
     var = hasnegatives(matrix_function)
 
@@ -172,7 +176,7 @@ def calculate(second_window, matrices, changes, matrix_function):
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
     
-    thirdwindowfunction(third_window, matrices)
+    thirdwindowfunction(third_window, matrices, changes)
     
 
 def secondwindowfunction(first_window, matrix_function):
@@ -185,6 +189,7 @@ def secondwindowfunction(first_window, matrix_function):
     
     # All changes
     changes = []
+    changes.append(["Matriz incial"])
 
     # Create a second window
     second_window = Tk()
