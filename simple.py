@@ -121,8 +121,20 @@ def makechanges(matrix_function, matrices, changes):
     
     changes.append(tmp_changes)
 
-def thirdwindowfunction(third_window, matrices, changes):
-    
+def destroywindow(third_window,matrices, changes):
+    third_window.destroy()
+    thirdwindowfunction(matrices,changes)
+
+def thirdwindowfunction(matrices, changes):
+    # Create a third window.
+    third_window = Tk()
+    third_window.update_idletasks()
+    width = third_window.winfo_width()
+    height = third_window.winfo_height()
+    x = (third_window.winfo_screenwidth() // 2) - (width // 2)
+    y = (third_window.winfo_screenheight() // 2) - (height // 2)
+    third_window.geometry('{}x{}+{}+{}'.format(width+800, height+800, x-300, y-300))
+
     if matrices == []:
         function_label = Label(third_window, text='FIN.')
         function_label.place(x=700, y=350)
@@ -159,7 +171,7 @@ def thirdwindowfunction(third_window, matrices, changes):
             function_label.place(x=120, y=100*(x+2))
     
         # The buttton
-        button = Button(third_window, text="Next", command=lambda: thirdwindowfunction(third_window, matrices[1:], changes[1:]))
+        button = Button(third_window, text="Next", command=lambda: destroywindow(third_window,matrices[1:], changes[1:]))
         button.place(x=700, y=300)
 
         third_window.mainloop()
@@ -167,10 +179,6 @@ def thirdwindowfunction(third_window, matrices, changes):
 def calculate(second_window, matrices, changes, matrix_function):
 
     second_window.destroy()
-    
-    # Create a third window.
-    third_window = Tk()
-    third_window.geometry("900x600")
 
     var = hasnegatives(matrix_function)
 
@@ -184,7 +192,7 @@ def calculate(second_window, matrices, changes, matrix_function):
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
     
-    thirdwindowfunction(third_window, matrices, changes)
+    thirdwindowfunction(matrices, changes)
 
 def secondwindowfunction(first_window, matrix_function):
 
