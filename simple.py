@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from PIL import ImageTk, Image
 import sys
 from fractions import Fraction 
-import copy 
+import copy
+
 
 # This function does everything with the graphing
 def showfunction(functions):
@@ -52,6 +53,7 @@ def showfunction(functions):
                                  where=((array_of_functions[i] >= 0) & (array_of_functions[j] >= 0)), facecolor='blue',
                                  alpha=0.5)
     plt.savefig('graph.png')
+    return plt
 
 def calculatepivots(matrix_function):
     
@@ -121,18 +123,22 @@ def makechanges(matrix_function, matrices, changes):
     
     changes.append(tmp_changes)
 
-def destroywindow(third_window,matrices, changes):
+def destroywindow(third_window,matrices, changes, plt):
     third_window.destroy()
-    thirdwindowfunction(matrices,changes)
+    thirdwindowfunction(matrices,changes,plt)
 
-def thirdwindowfunction(matrices, changes):
+def thirdwindowfunction(matrices, changes, plt):
     # Create a third window.
     third_window = Tk()
+
     third_window.update_idletasks()
+
     width = third_window.winfo_width()
     height = third_window.winfo_height()
+
     x = (third_window.winfo_screenwidth() // 2) - (width // 2)
     y = (third_window.winfo_screenheight() // 2) - (height // 2)
+
     third_window.geometry('{}x{}+{}+{}'.format(width+800, height+800, x-300, y-300))
 
     if matrices == []:
@@ -171,12 +177,12 @@ def thirdwindowfunction(matrices, changes):
             function_label.place(x=120, y=100*(x+2))
     
         # The buttton
-        button = Button(third_window, text="Next", command=lambda: destroywindow(third_window,matrices[1:], changes[1:]))
+        button = Button(third_window, text="Next", command=lambda: destroywindow(third_window,matrices[1:], changes[1:], plt))
         button.place(x=700, y=300)
 
         third_window.mainloop()
     
-def calculate(second_window, matrices, changes, matrix_function):
+def calculate(second_window, matrices, changes, matrix_function, plt):
 
     second_window.destroy()
 
@@ -192,7 +198,7 @@ def calculate(second_window, matrices, changes, matrix_function):
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
     
-    thirdwindowfunction(matrices, changes)
+    thirdwindowfunction(matrices, changes, plt)
 
 def secondwindowfunction(first_window, matrix_function):
 
@@ -235,7 +241,7 @@ def secondwindowfunction(first_window, matrix_function):
             function_label.place(x=80*(j+1), y=40*(i+1))
 
     # Calls the function
-    showfunction(matrix_function)
+    plt = showfunction(matrix_function)
 
     # Open the image
     img = ImageTk.PhotoImage(Image.open("graph.png"))
@@ -246,7 +252,9 @@ def secondwindowfunction(first_window, matrix_function):
     # This is necesary to open the window
     
     # The buttton
-    button = Button(second_window, text="Next", command=lambda: calculate(second_window, matrices, changes, matrix_function))
+    button = Button(second_window, text="Next", command=lambda: calculate(
+        second_window, matrices, changes, matrix_function, plt))
+
     button.place(x=800, y=450)
     second_window.mainloop()
 
