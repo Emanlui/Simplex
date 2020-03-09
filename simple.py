@@ -53,7 +53,6 @@ def showfunction(functions):
                                  alpha=0.5)
     plt.savefig('graph.png')
 
-
 def calculatepivots(matrix_function):
     
     column_pivot = 0
@@ -61,21 +60,30 @@ def calculatepivots(matrix_function):
     row_pivot = 0
     row_number = sys.maxsize
     
+    # Travel alonmg the matrix to find the lowest column number
     for x in range(len(matrix_function)):
         if matrix_function[len(matrix_function)-1][x] < column_number:
             column_number = matrix_function[len(matrix_function)-1][x]
             column_pivot = x
     
     for y in range(len(matrix_function)-1):
-        if matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot] < row_number:
+    
+        # Verify that the divisor is greater than zero
+        if matrix_function[y][column_pivot] == 0:
+            continue
+            
+        # Travel alonmg the matrix to find the lowest row number
+        elif matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot] < row_number:
             row_number = matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot]
             row_pivot = y
     
+    # Return the position of the pivot.
     res = [row_pivot, column_pivot]
     return res
 
 def hasnegatives(matrix_function):
     
+    # Function to verify if are negatives left on the matrix.
     for x in range(len(matrix_function[0])-1):
         if matrix_function[len(matrix_function)-1][x] < 0:
             return True    
@@ -84,20 +92,20 @@ def hasnegatives(matrix_function):
 
 def makechanges(matrix_function, matrices, changes):
     
+    # Function to modifiy the matrix after the pivot is found.
     tmp_changes = []
        
-    #primera linea 
     pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
 
     string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0]+1) + '.'
     tmp_changes.append(string)
     
+    # Changes the column pivot.
     for x in range(len(matrix_function[0])):
         matrix_function[pivots[0]][x] = matrix_function[pivots[0]][x] / pivot_number
-        
-    #segunda linea
     
+    # Changes all the rows left on the matrix.
     for x in range(len(matrix_function)):
         
         if x == pivots[0]:
@@ -160,7 +168,7 @@ def calculate(second_window, matrices, changes, matrix_function):
 
     second_window.destroy()
     
-    # Create a second window
+    # Create a third window.
     third_window = Tk()
     third_window.geometry("900x600")
 
@@ -177,7 +185,6 @@ def calculate(second_window, matrices, changes, matrix_function):
     matrices.append(matrix_tmp)
     
     thirdwindowfunction(third_window, matrices, changes)
-    
 
 def secondwindowfunction(first_window, matrix_function):
 
@@ -319,6 +326,5 @@ def firstwindowfunction():
 
     # This is necesary to open the window
     first_window.mainloop()
-
 
 firstwindowfunction()
