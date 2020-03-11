@@ -4,19 +4,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import ImageTk, Image
 import sys
-from fractions import Fraction 
+from fractions import Fraction
 import copy
-
-DIM = 0
 
 # This function does everything with the graphing
 def showfunction(functions):
-
     # This gets the max point to show the linear function
     max_number = 0
     length_of_matrix = len(functions)
     for i in functions:
-        max_number = max(i[len(i)-1],max_number)
+        max_number = max(i[len(i) - 1], max_number)
 
     # Adds the range of the X dimension
     x = np.array(range(0, max_number))
@@ -24,7 +21,7 @@ def showfunction(functions):
     array_of_functions = []
 
     # Adds the linear function to the graph
-    for i in range(length_of_matrix-1):
+    for i in range(length_of_matrix - 1):
         y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
         plt.plot(x, y)
         array_of_functions.append(y)
@@ -56,77 +53,79 @@ def showfunction(functions):
     plt.savefig('graph.png')
     return plt
 
+
 def calculatepivots(matrix_function):
-    
     column_pivot = 0
     column_number = 0
     row_pivot = 0
     row_number = sys.maxsize
-    
+
     # Travel alonmg the matrix to find the lowest column number
     for x in range(len(matrix_function)):
-        if matrix_function[len(matrix_function)-1][x] < column_number:
-            column_number = matrix_function[len(matrix_function)-1][x]
+        if matrix_function[len(matrix_function) - 1][x] < column_number:
+            column_number = matrix_function[len(matrix_function) - 1][x]
             column_pivot = x
-    
-    for y in range(len(matrix_function)-1):
-    
+
+    for y in range(len(matrix_function) - 1):
+
         # Verify that the divisor is greater than zero
         if matrix_function[y][column_pivot] == 0:
             continue
-            
+
         # Travel alonmg the matrix to find the lowest row number
-        elif matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot] < row_number:
-            row_number = matrix_function[y][len(matrix_function[0])-1] / matrix_function[y][column_pivot]
+        elif matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot] < row_number:
+            row_number = matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot]
             row_pivot = y
-    
+
     # Return the position of the pivot.
     res = [row_pivot, column_pivot]
     return res
 
+
 def hasnegatives(matrix_function):
-    
     # Function to verify if are negatives left on the matrix.
-    for x in range(len(matrix_function[0])-1):
-        if matrix_function[len(matrix_function)-1][x] < 0:
-            return True    
-    
+    for x in range(len(matrix_function[0]) - 1):
+        if matrix_function[len(matrix_function) - 1][x] < 0:
+            return True
+
     return False
 
+
 def makechanges(matrix_function, matrices, changes):
-    
     # Function to modifiy the matrix after the pivot is found.
     tmp_changes = []
-       
+
     pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
 
-    string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0]+1) + '.'
+    string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0] + 1) + '.'
     tmp_changes.append(string)
-    
+
     # Changes the column pivot.
     for x in range(len(matrix_function[0])):
         matrix_function[pivots[0]][x] = matrix_function[pivots[0]][x] / pivot_number
-    
+
     # Changes all the rows left on the matrix.
     for x in range(len(matrix_function)):
-        
+
         if x == pivots[0]:
             continue
 
         tmp_number = matrix_function[x][pivots[1]]
-        string = 'Fila ' + str(pivots[0]+1) + ' multiplicado por ' + str(-tmp_number) + ' sumado a la fila ' + str(x+1) + '.'
+        string = 'Fila ' + str(pivots[0] + 1) + ' multiplicado por ' + str(-tmp_number) + ' sumado a la fila ' + str(
+            x + 1) + '.'
         tmp_changes.append(string)
-        
+
         for y in range(len(matrix_function[0])):
-            
             matrix_function[x][y] = matrix_function[x][y] + (-tmp_number * matrix_function[pivots[0]][y])
-    
+
     changes.append(tmp_changes)
 
-def destroywindow(third_window,matrices, changes, plt):
+
+def destroywindow(third_window, matrices, changes, plt):
     third_window.destroy()
-    thirdwindowfunction(matrices,changes,plt)
+    thirdwindowfunction(matrices, changes, plt)
+
 
 def thirdwindowfunction(matrices, changes, plt):
     # Create a third window.
@@ -140,14 +139,14 @@ def thirdwindowfunction(matrices, changes, plt):
     x = (third_window.winfo_screenwidth() // 2) - (width // 2)
     y = (third_window.winfo_screenheight() // 2) - (height // 2)
 
-    third_window.geometry('{}x{}+{}+{}'.format(width+800, height+800, x-300, y-300))
+    third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
 
     if matrices == []:
         function_label = Label(third_window, text='FIN.')
         function_label.place(x=700, y=350)
-    
+
     else:
-    
+
         # This is only the label
         function_label = Label(third_window, text='Matrix: ')
         function_label.place(x=20, y=10)
@@ -156,59 +155,59 @@ def thirdwindowfunction(matrices, changes, plt):
         function_label.place(x=80, y=20)
 
         function_label = Label(third_window, text="Y")
-        function_label.place(x=80*2, y=20)
+        function_label.place(x=80 * 2, y=20)
 
-        for i in range(2,len(matrices[0])+2):
-            function_label = Label(third_window, text="Z" + str(i-1))
-            function_label.place(x=80 * (i+1), y=20)
+        for i in range(2, len(matrices[0]) + 2):
+            function_label = Label(third_window, text="Z" + str(i - 1))
+            function_label.place(x=80 * (i + 1), y=20)
 
         function_label = Label(third_window, text="Result")
-        function_label.place(x=80 * (len(matrices[0])+3), y=20)
+        function_label.place(x=80 * (len(matrices[0]) + 3), y=20)
 
         # We print the matrix on the screen
         for i in range(len(matrices[0])):
             for j in range(len((matrices[0])[i])):
                 function_label = Label(third_window, text=str(Fraction((matrices[0])[i][j]).limit_denominator()))
                 # The position depends on the i position
-                function_label.place(x=80*(j+1), y=40*(i+1))
-        
+                function_label.place(x=80 * (j + 1), y=40 * (i + 1))
+
         for x in range(len(changes[0])):
             function_label = Label(third_window, text=str(changes[0][x]))
             # The position depends on the i position
-            function_label.place(x=120, y=100*(x+2))
-    
+            function_label.place(x=120, y=100 * (x + 2))
+
         # The buttton
-        button = Button(third_window, text="Next", command=lambda: destroywindow(third_window,matrices[1:], changes[1:], plt))
+        button = Button(third_window, text="Next",
+                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt))
         button.place(x=700, y=300)
 
         third_window.mainloop()
-    
-def calculate(second_window, matrices, changes, matrix_function, plt):
 
+
+def calculate(second_window, matrices, changes, matrix_function, plt):
     second_window.destroy()
 
     var = hasnegatives(matrix_function)
 
     while var:
-
         matrix_tmp = copy.deepcopy(matrix_function)
         matrices.append(matrix_tmp)
         makechanges(matrix_function, matrices, changes)
         var = hasnegatives(matrix_function)
-    
+
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
-    
+
     thirdwindowfunction(matrices, changes, plt)
 
-def secondwindowfunction(first_window, matrix_function):
 
+def secondwindowfunction(first_window, matrix_function):
     # First we need to destroy the first window, we do not need it anymore
     first_window.destroy()
 
     # All matrix stages
     matrices = []
-    
+
     # All changes
     changes = []
     changes.append(["Matriz incial"])
@@ -221,14 +220,12 @@ def secondwindowfunction(first_window, matrix_function):
     function_label = Label(second_window, text='Matrix: ')
     function_label.place(x=20, y=10)
 
-
-
     # We print the matrix on the screen
     for i in range(len(matrix_function)):
         for j in range(len(matrix_function[i])):
             function_label = Label(second_window, text=str(matrix_function[i][j]))
             # The position depends on the i position
-            function_label.place(x=80*(j+1), y=40*(i+1))
+            function_label.place(x=80 * (j + 1), y=40 * (i + 1))
 
     # Calls the function
     plt = showfunction(matrix_function)
@@ -240,7 +237,7 @@ def secondwindowfunction(first_window, matrix_function):
     # Place it
     panel.place(x=80, y=250)
     # This is necesary to open the window
-    
+
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(
         second_window, matrices, changes, matrix_function, plt))
@@ -269,9 +266,6 @@ def firstwindowfunction():
                 # Loops the file and append it to the file_variable (file data)
                 file_function.append(i.rstrip())
 
-    # We set de dimensions of the problem
-    DIM = len(file_function[0].split())
-
     for i in file_function:
         a = i.split()
         new_list = []
@@ -279,12 +273,20 @@ def firstwindowfunction():
             new_list.append(int(j))
         file_function_int.append(new_list)
 
+    dim = 0
 
+    for i in file_function_int[len(file_function_int) - 1]:
+
+        if (i != 0):
+            dim = dim + 1
+
+    print(dim-1)
     print(file_function_int)
 
-    secondwindowfunction(first_window,file_function_int)
+    secondwindowfunction(first_window, file_function_int)
 
     # This is necesary to open the window
     first_window.mainloop()
+
 
 firstwindowfunction()
