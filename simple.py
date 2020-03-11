@@ -8,7 +8,12 @@ from fractions import Fraction
 import copy
 
 # This function does everything with the graphing
-def showfunction(functions):
+def show3Dfunction(functions):
+    return functions
+
+
+# This function does everything with the graphing
+def show2Dfunction(functions):
     # This gets the max point to show the linear function
     max_number = 0
     length_of_matrix = len(functions)
@@ -23,6 +28,7 @@ def showfunction(functions):
     # Adds the linear function to the graph
     for i in range(length_of_matrix - 1):
         y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
+        print(y)
         plt.plot(x, y)
         array_of_functions.append(y)
     # Saves the image, this is necesary because we need to open it later
@@ -201,7 +207,7 @@ def calculate(second_window, matrices, changes, matrix_function, plt):
     thirdwindowfunction(matrices, changes, plt)
 
 
-def secondwindowfunction(first_window, matrix_function):
+def secondwindowfunction(first_window, matrix_function,dim):
     # First we need to destroy the first window, we do not need it anymore
     first_window.destroy()
 
@@ -227,16 +233,30 @@ def secondwindowfunction(first_window, matrix_function):
             # The position depends on the i position
             function_label.place(x=80 * (j + 1), y=40 * (i + 1))
 
+    plt = []
     # Calls the function
-    plt = showfunction(matrix_function)
+    if dim-1 == 2:
+        plt = show2Dfunction(matrix_function)
 
-    # Open the image
-    img = ImageTk.PhotoImage(Image.open("graph.png"))
-    # Saves it on a label
-    panel = Label(second_window, image=img)
-    # Place it
-    panel.place(x=80, y=250)
-    # This is necesary to open the window
+        # Open the image
+        img = ImageTk.PhotoImage(Image.open("graph.png"))
+        # Saves it on a label
+        panel = Label(second_window, image=img)
+        # Place it
+        panel.place(x=80, y=250)
+        # This is necesary to open the window
+
+
+    elif dim-1 == 3:
+        plt = show3Dfunction(matrix_function)
+
+        # Open the image
+        img = ImageTk.PhotoImage(Image.open("graph.png"))
+        # Saves it on a label
+        panel = Label(second_window, image=img)
+        # Place it
+        panel.place(x=80, y=250)
+        # This is necesary to open the window
 
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(
@@ -277,13 +297,13 @@ def firstwindowfunction():
 
     for i in file_function_int[len(file_function_int) - 1]:
 
-        if (i != 0):
+        if i != 0:
             dim = dim + 1
 
     print(dim-1)
     print(file_function_int)
 
-    secondwindowfunction(first_window, file_function_int)
+    secondwindowfunction(first_window, file_function_int,dim)
 
     # This is necesary to open the window
     first_window.mainloop()
