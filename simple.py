@@ -7,6 +7,7 @@ import sys
 from fractions import Fraction 
 import copy
 
+DIM = 0
 
 # This function does everything with the graphing
 def showfunction(functions):
@@ -220,18 +221,7 @@ def secondwindowfunction(first_window, matrix_function):
     function_label = Label(second_window, text='Matrix: ')
     function_label.place(x=20, y=10)
 
-    function_label = Label(second_window, text="X")
-    function_label.place(x=80, y=20)
 
-    function_label = Label(second_window, text="Y")
-    function_label.place(x=80*2, y=20)
-
-    for i in range(2,len(matrix_function)+2):
-        function_label = Label(second_window, text="Z" + str(i-1))
-        function_label.place(x=80 * (i+1), y=20)
-
-    function_label = Label(second_window, text="Result")
-    function_label.place(x=80 * (len(matrix_function)+3), y=20)
 
     # We print the matrix on the screen
     for i in range(len(matrix_function)):
@@ -265,15 +255,10 @@ def firstwindowfunction():
     first_window.geometry("500x200")
 
     # Data from the file
-    file_variable = []
-    # The function variables are store here
-    function_array = []
-    # The constraints data is store here
-    constraints_array = []
-    # The identity matrix
-    identity = []
-    # The matrix use to do all the operations
-    matrix_functions = []
+    file_function = []
+
+    # The file with ints
+    file_function_int = []
 
     # Open the file directory
     filename = fd.askopenfilename()
@@ -282,63 +267,22 @@ def firstwindowfunction():
         with open(filename) as file:
             for i in file:
                 # Loops the file and append it to the file_variable (file data)
-                file_variable.append(i.rstrip())
+                file_function.append(i.rstrip())
 
-    # Identity matriz, it is use to complete the process of maximaze
-    for i in range(0, len(file_variable)):
-        # We create a list with zero
-        list = [0]*len(file_variable)
-        # Then we add the add in the position to be identity matrix
-        list[i] = 1
-        # We append it
-        identity.append(list)
+    # We set de dimensions of the problem
+    DIM = len(file_function[0].split())
 
-    # The first position should be the function variables and we split it to save it in an array
-    function_array = file_variable[0].split()
-
-    # We loop the file data to store it in the constraints array
-    for i in range(1, len(file_variable)):
-        constraint = file_variable[i].split()
-        constraints_array.append(constraint)
-
-    # Now we have to add the constraints to the function array that we are gonna we to do all the magic
-    for i in range(0, len(file_variable)-1):
-        # We create a new list, the we append the first two values
-        list = []
-        list.append(int(constraints_array[i][0]))
-        list.append(int(constraints_array[i][1]))
-
-        # We need to loop through the identity matrix because we need to append every item
-        for j in identity[i]:
-            list.append(int(j))
-        list.append(int(constraints_array[i][2]))
-        matrix_functions.append(list)
-
-    # Finally we do the same thing with the function list
-    list = []
-    list.append(-int(function_array[0]))
-    list.append(-int(function_array[1]))
-    for i in identity[len(identity)-1]:
-        list.append(int(i))
-    list.append(0)
-    matrix_functions.append(list)
+    for i in file_function:
+        a = i.split()
+        new_list = []
+        for j in a:
+            new_list.append(int(j))
+        file_function_int.append(new_list)
 
 
-    # The labels to be use
-    function_label = Label(first_window, text='Function: ' + file_variable[0])
-    constraints_label = Label(first_window, text='Constraints: ')
-    # The labels position
-    function_label.place(x=0, y=0)
-    constraints_label.place(x=0, y=20)
+    print(file_function_int)
 
-    # Prints the constraints on the window
-    for i in range(1,len(file_variable)):
-        constraints = Label(first_window, text=file_variable[i])
-        constraints.place(x=100, y=i*30)
-
-    # The buttton
-    button = Button(first_window, text="Next", command=lambda: secondwindowfunction(first_window, matrix_functions))
-    button.place(x=100, y=0)
+    secondwindowfunction(first_window,file_function_int)
 
     # This is necesary to open the window
     first_window.mainloop()
