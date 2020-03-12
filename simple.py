@@ -11,7 +11,6 @@ import copy
 def show3Dfunction(functions):
     return functions
 
-
 # This function does everything with the graphing
 def show2Dfunction(functions):
     # This gets the max point to show the linear function
@@ -28,7 +27,6 @@ def show2Dfunction(functions):
     # Adds the linear function to the graph
     for i in range(length_of_matrix - 1):
         y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
-        print(y)
         plt.plot(x, y)
         array_of_functions.append(y)
     # Saves the image, this is necesary because we need to open it later
@@ -61,13 +59,14 @@ def show2Dfunction(functions):
 
 
 def calculatepivots(matrix_function):
+
     column_pivot = 0
     column_number = 0
     row_pivot = 0
     row_number = sys.maxsize
 
     # Travel alonmg the matrix to find the lowest column number
-    for x in range(len(matrix_function)):
+    for x in range(len(matrix_function[len(matrix_function)-1])):
         if matrix_function[len(matrix_function) - 1][x] < column_number:
             column_number = matrix_function[len(matrix_function) - 1][x]
             column_pivot = x
@@ -75,18 +74,22 @@ def calculatepivots(matrix_function):
     for y in range(len(matrix_function) - 1):
 
         # Verify that the divisor is greater than zero
-        if matrix_function[y][column_pivot] == 0:
+        if matrix_function[y][column_pivot] == 0 :
             continue
 
         # Travel alonmg the matrix to find the lowest row number
         elif matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot] < row_number:
-            row_number = matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot]
-            row_pivot = y
+        
+            if matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot] > 0:
+                row_number = matrix_function[y][len(matrix_function[0]) - 1] / matrix_function[y][column_pivot]
+                row_pivot = y
+            
+            else:
+                continue
 
     # Return the position of the pivot.
     res = [row_pivot, column_pivot]
     return res
-
 
 def hasnegatives(matrix_function):
     # Function to verify if are negatives left on the matrix.
@@ -96,13 +99,45 @@ def hasnegatives(matrix_function):
 
     return False
 
+def imp(matriz):
+    
+    print('\n')
+    for x in range(len(matriz)):
+        print(matriz[x])
+
+def errorfunction(msj):
+    
+    error_window = Tk()
+    error_window.geometry("500x200")
+    
+    function_label = Label(error_window, text="ATENCION: ")
+    function_label.place(x=80, y=20)
+    
+    function_label = Label(error_window, text=msj)
+    function_label.place(x=80, y=50)
+    
+    # This is necesary to open the window
+    error_window.mainloop()
 
 def makechanges(matrix_function, matrices, changes):
+
     # Function to modifiy the matrix after the pivot is found.
     tmp_changes = []
 
     pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
+
+    #print(pivot_number, pivots)
+    #imp(matrix_function)
+
+    flag = False
+    
+    for x in range(len(matrix_function)):
+        if matrix_function[x][pivots[1]] > 0:
+            flag = True
+
+    if flag == False:
+        errorfunction("Solucion no encontrada")
 
     string = '1/' + str(pivot_number) + ' en toda la fila ' + str(pivots[0] + 1) + '.'
     tmp_changes.append(string)
@@ -299,9 +334,6 @@ def firstwindowfunction():
 
         if i != 0:
             dim = dim + 1
-
-    print(dim-1)
-    print(file_function_int)
 
     secondwindowfunction(first_window, file_function_int,dim)
 
