@@ -181,19 +181,18 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function):
     y = (third_window.winfo_screenheight() // 2) - (height // 2)
 
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
-
     if matrices == []:
         
-        for i in range(len(matrix_function[0])):
+        for i in range(len(matrix_function)):
 
             function_label = Label(third_window, text="X"+str(i))
             function_label.place(x=300, y=50*(i+1))
 
-            if matrix_function[len(matrix_function)-1][i] < 0:
+            if matrix_function[i][len(matrix_function[0])-1] < 0:
                 function_label = Label(third_window, text="0")
                 function_label.place(x=400, y=50*(i+1))
             else:
-                function_label = Label(third_window, text=str(matrix_function[len(matrix_function)][i]))
+                function_label = Label(third_window, text=str(Fraction(matrix_function[i][len(matrix_function[0])-1]).limit_denominator()))
                 function_label.place(x=400, y=50 * (i + 1))
 
     else:
@@ -208,12 +207,12 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function):
         function_label = Label(third_window, text="Y")
         function_label.place(x=80 * 2, y=20)
 
-        for i in range(2, len(matrices[0]) + 2):
+        for i in range(2, len(matrix_function[0])-1):
             function_label = Label(third_window, text="Z" + str(i - 1))
             function_label.place(x=80 * (i + 1), y=20)
-
-        function_label = Label(third_window, text="Result")
-        function_label.place(x=80 * (len(matrices[0]) + 3), y=20)
+            if(i+1 == len(matrix_function[0])-1):
+                function_label = Label(third_window, text="Result")
+                function_label.place(x=80 * (i + 2), y=20)
 
         # We print the matrix on the screen
         for i in range(len(matrices[0])):
