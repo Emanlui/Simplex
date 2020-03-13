@@ -163,12 +163,12 @@ def makechanges(matrix_function, matrices, changes):
     changes.append(tmp_changes)
 
 
-def destroywindow(third_window, matrices, changes, plt):
+def destroywindow(third_window, matrices, changes, plt, matrix_function):
     third_window.destroy()
-    thirdwindowfunction(matrices, changes, plt)
+    thirdwindowfunction(matrices, changes, plt, matrix_function)
 
 
-def thirdwindowfunction(matrices, changes, plt):
+def thirdwindowfunction(matrices, changes, plt, matrix_function):
     # Create a third window.
     third_window = Tk()
 
@@ -183,8 +183,18 @@ def thirdwindowfunction(matrices, changes, plt):
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
 
     if matrices == []:
-        function_label = Label(third_window, text='FIN.')
-        function_label.place(x=700, y=350)
+        
+        for i in range(len(matrix_function[0])):
+
+            function_label = Label(third_window, text="X"+str(i))
+            function_label.place(x=300, y=50*(i+1))
+
+            if matrix_function[len(matrix_function)-1][i] < 0:
+                function_label = Label(third_window, text="0")
+                function_label.place(x=400, y=50*(i+1))
+            else:
+                function_label = Label(third_window, text=str(matrix_function[len(matrix_function)][i]))
+                function_label.place(x=400, y=50 * (i + 1))
 
     else:
 
@@ -219,7 +229,7 @@ def thirdwindowfunction(matrices, changes, plt):
 
         # The buttton
         button = Button(third_window, text="Next",
-                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt))
+                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt, matrix_function))
         button.place(x=700, y=300)
 
         third_window.mainloop()
@@ -239,7 +249,7 @@ def calculate(second_window, matrices, changes, matrix_function, plt):
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
 
-    thirdwindowfunction(matrices, changes, plt)
+    thirdwindowfunction(matrices, changes, plt, matrix_function)
 
 
 def secondwindowfunction(first_window, matrix_function,dim):
