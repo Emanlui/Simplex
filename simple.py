@@ -163,12 +163,23 @@ def makechanges(matrix_function, matrices, changes):
     changes.append(tmp_changes)
 
 
-def destroywindow(third_window, matrices, changes, plt, matrix_function):
+def destroywindow(third_window, matrices, changes, plt, matrix_function, dim):
     third_window.destroy()
-    thirdwindowfunction(matrices, changes, plt, matrix_function)
+    thirdwindowfunction(matrices, changes, plt, matrix_function, dim)
 
+def return_result(matrix_function, dim):
 
-def thirdwindowfunction(matrices, changes, plt, matrix_function):
+    lista = []
+
+    for i in matrix_function:
+        for j in range(0,dim):
+            if int(i[j]) == 1:
+                lista.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
+
+    lista.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
+    return lista
+
+def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
     # Create a third window.
     third_window = Tk()
 
@@ -182,18 +193,12 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function):
 
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
     if matrices == []:
-        
+
+        matrix_function = return_result(matrix_function, dim)
+        print(matrix_function)
         for i in range(len(matrix_function)):
-
-            function_label = Label(third_window, text="X"+str(i))
-            function_label.place(x=300, y=50*(i+1))
-
-            if matrix_function[i][len(matrix_function[0])-1] < 0:
-                function_label = Label(third_window, text="0")
-                function_label.place(x=400, y=50*(i+1))
-            else:
-                function_label = Label(third_window, text=str(Fraction(matrix_function[i][len(matrix_function[0])-1]).limit_denominator()))
-                function_label.place(x=400, y=50 * (i + 1))
+            function_label = Label(third_window, text=matrix_function[i])
+            function_label.place(x=200, y=100*(i+1))
 
     else:
 
@@ -210,7 +215,7 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function):
         for i in range(2, len(matrix_function[0])-1):
             function_label = Label(third_window, text="Z" + str(i - 1))
             function_label.place(x=80 * (i + 1), y=20)
-            if(i+1 == len(matrix_function[0])-1):
+            if i+1 == len(matrix_function[0])-1:
                 function_label = Label(third_window, text="Result")
                 function_label.place(x=80 * (i + 2), y=20)
 
@@ -228,13 +233,13 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function):
 
         # The buttton
         button = Button(third_window, text="Next",
-                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt, matrix_function))
+                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt, matrix_function, dim))
         button.place(x=700, y=300)
 
         third_window.mainloop()
 
 
-def calculate(second_window, matrices, changes, matrix_function, plt):
+def calculate(second_window, matrices, changes, matrix_function, plt, dim):
     second_window.destroy()
 
     var = hasnegatives(matrix_function)
@@ -248,7 +253,7 @@ def calculate(second_window, matrices, changes, matrix_function, plt):
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
 
-    thirdwindowfunction(matrices, changes, plt, matrix_function)
+    thirdwindowfunction(matrices, changes, plt, matrix_function, dim)
 
 
 def secondwindowfunction(first_window, matrix_function,dim):
@@ -304,7 +309,7 @@ def secondwindowfunction(first_window, matrix_function,dim):
 
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(
-        second_window, matrices, changes, matrix_function, plt))
+        second_window, matrices, changes, matrix_function, plt, dim))
 
     button.place(x=800, y=450)
     second_window.mainloop()
