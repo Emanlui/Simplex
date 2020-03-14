@@ -52,8 +52,7 @@ def show2Dfunction(functions):
         for j in range(0, len(array_of_functions)):
             if i != j:
                 plt.fill_between(x, array_of_functions[i], array_of_functions[j],
-                                 where=((array_of_functions[i] >= 0) & (array_of_functions[j] >= 0)), facecolor='blue',
-                                 alpha=0.5)
+                                 where=((array_of_functions[i] >= 0) & (array_of_functions[j] >= 0)), facecolor='blue', alpha=0.5)
     plt.savefig('graph.png')
     return plt
 
@@ -167,17 +166,22 @@ def destroywindow(third_window, matrices, changes, plt, matrix_function, dim):
     third_window.destroy()
     thirdwindowfunction(matrices, changes, plt, matrix_function, dim)
 
-def return_result(matrix_function, dim):
+def return_result(matrix_function, dim, plt):
 
-    lista = []
-
+    list = []
+    point = [0] * 10
     for i in matrix_function:
         for j in range(0,dim):
             if int(i[j]) == 1:
-                lista.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
-
-    lista.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
-    return lista
+                list.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
+                point[j] = Fraction(i[-1]).limit_denominator()
+    list.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
+    if dim == 2:
+        plt.scatter(point[0], point[1], label='Result', color='r')
+    elif dim == 3:
+        plt.scatter(point[0], point[3], point[2], label='Result', color='r')
+    plt.savefig('result_graph.png')
+    return list
 
 def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
     # Create a third window.
@@ -194,12 +198,18 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
     if matrices == []:
 
-        matrix_function = return_result(matrix_function, dim)
-        print(matrix_function)
+        matrix_function = return_result(matrix_function, dim, plt)
         for i in range(len(matrix_function)):
             function_label = Label(third_window, text=matrix_function[i])
-            function_label.place(x=200, y=100*(i+1))
+            function_label.place(x=200, y=30*(i+1))
 
+        # Open the image
+        img = ImageTk.PhotoImage(Image.open("result_graph.png"))
+        # Saves it on a label
+        panel = Label(third_window, image=img)
+        # Place it
+        panel.place(x=150, y=300)
+        third_window.mainloop()
     else:
 
         # This is only the label
@@ -283,8 +293,9 @@ def secondwindowfunction(first_window, matrix_function,dim):
             function_label.place(x=80 * (j + 1), y=40 * (i + 1))
 
     plt = []
+    print(dim)
     # Calls the function
-    if dim-1 == 2:
+    if dim == 2:
         plt = show2Dfunction(matrix_function)
 
         # Open the image
@@ -295,8 +306,7 @@ def secondwindowfunction(first_window, matrix_function,dim):
         panel.place(x=80, y=250)
         # This is necesary to open the window
 
-
-    elif dim-1 == 3:
+    elif dim == 3:
         plt = show3Dfunction(matrix_function)
 
         # Open the image
