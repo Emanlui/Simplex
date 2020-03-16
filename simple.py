@@ -186,14 +186,14 @@ def return_result(matrix_function, dim, plt):
 
     list = []
     point = [0] * 10
-    points_into_the_graphic = []
+    points_into_the_graphic = [0] * 3
 
     for i in matrix_function:
         for j in range(0,dim):
             if int(i[j]) == 1:
                 list.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
                 point[j] = Fraction(i[-1]).limit_denominator()
-                points_into_the_graphic.append(i[-1])
+                points_into_the_graphic[j] = i[-1]
     list.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
     if dim == 2:
         plt.scatter(point[0], point[1], label='Result', color='r')
@@ -204,7 +204,7 @@ def return_result(matrix_function, dim, plt):
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
-
+        plt.show()
     return list
 
 def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
