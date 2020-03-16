@@ -16,7 +16,7 @@ d = -point.dot(normal)
 xx, yy = np.meshgrid(range(10), range(10))
 
 # calculate corresponding z
-z = (-normal[0] * xx - normal[1] * yy - d) * 1. /normal[2]
+z = (-normal[0] * xx - normal[1] * yy - d) * 1. / normal[2]
 
 
 fig = plt.figure()
