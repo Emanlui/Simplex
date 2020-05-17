@@ -10,33 +10,33 @@ import math
 from mpl_toolkits.mplot3d import Axes3D
 
 # This function does everything with the graphing
-def show3Dfunction(functions):
-
+def show3Dfunction(functions, points_into_the_graphic):
+    
     # This gets the max point to show the linear function
     max_number = 0
     length_of_matrix = len(functions)
     for i in functions:
         max_number = max(i[len(i) - 1], max_number)
 
+    array_of_planes = []
+
+    for i in range(0,length_of_matrix-1):
+        plane = [functions[i][0],functions[i][1],functions[i][2]]
+        array_of_planes.append(plane)
+
+
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    ax = fig.add_subplot(111,projection='3d')
+    for i in array_of_planes:
 
-    # create x,y
-    xx, yy = np.meshgrid(range(max_number), range(max_number))
+        xx, yy = np.meshgrid(range(100), range(100))
 
-    list_of_planes = []
+        z = (-i[0] * xx - i[1] * yy) * 1. / i[2]
 
-    for i in functions:
-        x = i[-1]//i[0]
-        y = i[-1] // i[1]
-        z = i[-1] // i[2]
-        list_of_planes.append(np.array([x, y, z]))
+        ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
 
-    for i in list_of_planes:
-
-        # calculate corresponding z
-        z = (i[0] * xx + i[1] * yy) * 1. / i[2]
         ax.plot_surface(xx, yy, z, alpha=0.2)
+
     return plt
 
 # This function does everything with the graphing
@@ -44,18 +44,20 @@ def show2Dfunction(functions):
     # This gets the max point to show the linear function
     max_number = 0
     length_of_matrix = len(functions)
+    #print(functions)
     for i in functions:
         max_number = max(i[len(i) - 1], max_number)
 
     # Adds the range of the X dimension
-    x = np.array(range(0, max_number))
+    x = np.array(range(max_number*-10, max_number*10))
 
     array_of_functions = []
     array_of_functions.append(eval("0*x"))
     # Adds the linear function to the graph
-    for i in range(1, length_of_matrix - 1):
-        y = eval("(" + str(functions[i][-1]) + "-" + str(functions[i][0]) + "*x)/" + str(functions[i][1]))
-        print(y)
+    for i in range(0, length_of_matrix):
+        y = eval("(" + str(functions[i][0]) + "-" + str(functions[i][-1]) + "*x) / " + str(- functions[i][1]))
+        #print("(" + str(functions[i][0]) + "-" + str(functions[i][-1]) + "*x) / " + str(- functions[i][1]))
+        #print(y)
         plt.plot(x, y)
         array_of_functions.append(y)
     # Saves the image, this is necesary because we need to open it later
@@ -63,8 +65,7 @@ def show2Dfunction(functions):
     plt.xlabel('x - axis')
     plt.ylabel('y - axis')
     plt.title('The graph of the constraints')
-
-    print(array_of_functions)
+    #print(array_of_functions)
     for i in range(1,len(array_of_functions)):
         plt.fill_between(x,array_of_functions[0], array_of_functions[i], where=(array_of_functions[i] >= 0), facecolor='blue', alpha=0.2)
 
@@ -113,12 +114,6 @@ def hasnegatives(matrix_function):
             return True
 
     return False
-
-def imp(matriz):
-    
-    print('\n')
-    for x in range(len(matriz)):
-        print(matriz[x])
 
 def errorfunction(msj):
     
@@ -178,11 +173,12 @@ def makechanges(matrix_function, matrices, changes):
     changes.append(tmp_changes)
 
 
-def destroywindow(third_window, matrices, changes, plt, matrix_function, dim):
+def destroywindow(third_window, matrices, changes, plt, matrix_function, dim, first_matrix):
     third_window.destroy()
-    thirdwindowfunction(matrices, changes, plt, matrix_function, dim)
 
-def return_result(matrix_function, dim, plt):
+    thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matrix)
+
+def return_result(matrix_function, dim, plt, first_matrix):
 
     list = []
     point = [0] * 10
@@ -195,19 +191,17 @@ def return_result(matrix_function, dim, plt):
                 point[j] = Fraction(i[-1]).limit_denominator()
                 points_into_the_graphic[j] = i[-1]
     list.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
+    print("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
     if dim == 2:
         plt.scatter(point[0], point[1], label='Result', color='r')
         plt.savefig('result_graph.png')
     elif dim == 3:
-
-        print(points_into_the_graphic)
-        fig = plt.figure()
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
+        plt = show3Dfunction(first_matrix, points_into_the_graphic)
         plt.show()
+
     return list
 
-def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
+def thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matrix):
     # Create a third window.
     third_window = Tk()
 
@@ -223,7 +217,7 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
     if matrices == []:
 
 
-        matrix_function = return_result(matrix_function, dim, plt)
+        matrix_function = return_result(matrix_function, dim, plt, first_matrix)
         for i in range(len(matrix_function)):
             function_label = Label(third_window, text=matrix_function[i])
             function_label.place(x=200, y=30*(i+1))
@@ -270,13 +264,22 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim):
 
         # The buttton
         button = Button(third_window, text="Next",
-                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt, matrix_function, dim))
+                        command=lambda: destroywindow(third_window, matrices[1:], changes[1:], plt, matrix_function, dim, first_matrix))
         button.place(x=700, y=300)
 
         third_window.mainloop()
 
 
-def calculate(second_window, matrices, changes, matrix_function, plt, dim):
+def calculate(second_window, matrices, changes, matrix_function, plt, dim, first_matrix):
+
+    matriz = []
+
+    for i in first_matrix:
+        dato = []
+        for j in i:
+            dato.append(j)
+        matriz.append(dato)
+
     second_window.destroy()
 
     var = hasnegatives(matrix_function)
@@ -287,10 +290,12 @@ def calculate(second_window, matrices, changes, matrix_function, plt, dim):
         makechanges(matrix_function, matrices, changes)
         var = hasnegatives(matrix_function)
 
+
     matrix_tmp = copy.deepcopy(matrix_function)
     matrices.append(matrix_tmp)
 
-    thirdwindowfunction(matrices, changes, plt, matrix_function, dim)
+
+    thirdwindowfunction(matrices, changes, plt, matrix_function, dim, matriz)
 
 
 def secondwindowfunction(first_window, matrix_function,dim):
@@ -320,7 +325,6 @@ def secondwindowfunction(first_window, matrix_function,dim):
             function_label.place(x=80 * (j + 1), y=40 * (i + 1))
 
     plt = []
-    print(dim)
     # Calls the function
     if dim == 2:
         plt = show2Dfunction(matrix_function)
@@ -333,19 +337,9 @@ def secondwindowfunction(first_window, matrix_function,dim):
         panel.place(x=80, y=250)
         # This is necesary to open the window
 
-    elif dim == 3:
-        plt = show3Dfunction(matrix_function)
-
-
-        # The buttton
-        button = Button(second_window, text="Next", command=lambda: calculate(
-            second_window, matrices, changes, matrix_function, plt, dim))
-
-        button.place(x=800, y=450)
-        plt.show()
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(
-        second_window, matrices, changes, matrix_function, plt, dim))
+        second_window, matrices, changes, matrix_function, plt, dim, matrix_function))
 
     button.place(x=800, y=450)
     second_window.mainloop()
@@ -380,10 +374,7 @@ def firstwindowfunction():
 
     dim = 0
 
-    print(file_function_int[len(file_function_int) - 1])
-
     for i in range(len(file_function_int[0])):
-        print(file_function_int[len(file_function_int)-1][i])
         if file_function_int[len(file_function_int)-1][i] != 0:
             dim = dim + 1
         else:
