@@ -19,23 +19,30 @@ def show3Dfunction(functions, points_into_the_graphic):
         max_number = max(i[len(i) - 1], max_number)
 
     array_of_planes = []
-
+    print(functions)
     for i in range(0,length_of_matrix-1):
-        plane = [functions[i][0],functions[i][1],functions[i][2]]
+        plane = [functions[i][0],functions[i][1],functions[i][2], functions[i][-1]]
         array_of_planes.append(plane)
 
 
     fig = plt.figure()
     ax = fig.add_subplot(111,projection='3d')
+
+    x = np.linspace(-1,1,10)
+    y = np.linspace(-1,1,10)
+
+    X,Y = np.meshgrid(x,y)
+
+    print(array_of_planes)
     for i in array_of_planes:
+        
 
-        xx, yy = np.meshgrid(range(100), range(100))
+        Z = (i[0]*X + i[1]*Y -i[3])/i[2]
+        print("(" + str(i[0])+ "*X " + str(i[1]) + "*Y " + str(-i[3]) + ")/" + str(i[2]))
+        surf = ax.plot_surface(X, Y, Z)
 
-        z = (-i[0] * xx - i[1] * yy) * 1. / i[2]
-
-        ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
-
-        ax.plot_surface(xx, yy, z, alpha=0.2)
+        
+    ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
 
     return plt
 
