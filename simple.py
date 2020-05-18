@@ -191,7 +191,7 @@ def return_result(matrix_function, dim, plt, first_matrix, third_window):
 
     list = []
     point = [0] * 10
-    points_into_the_graphic = [0] * 3
+    points_into_the_graphic = [0] * dim
 
     for i in matrix_function:
         for j in range(0, dim):
@@ -204,9 +204,6 @@ def return_result(matrix_function, dim, plt, first_matrix, third_window):
     if dim == 2:
         plt.scatter(point[0], point[1], label='Result', color='r')
         plt.savefig('result_graph.png')
-    elif dim == 3:
-        plt = show3Dfunction(first_matrix, points_into_the_graphic)
-        plt.show()
 
     return list
 
@@ -224,7 +221,13 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matr
 
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
     if matrices == []:
-
+        matriz_puntos_3d = []
+        for i in matrix_function:
+            m = []
+            for j in i:
+                m.append(j)
+            matriz_puntos_3d.append(m)
+            
         matrix_function = return_result(matrix_function, dim, plt, first_matrix, third_window)
         for i in range(len(matrix_function)):
             function_label = Label(third_window, text=matrix_function[i])
@@ -237,7 +240,17 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matr
             panel = Label(third_window, image=img)
             # Place it
             panel.place(x=150, y=300)
-        
+        elif dim == 3:
+            point = [0] * 10
+            points_into_the_graphic = [0] * 3
+
+            for i in matriz_puntos_3d:
+                for j in range(0, dim):
+                    if int(i[j]) == 1:
+                        point[j] = Fraction(i[-1]).limit_denominator()
+                        points_into_the_graphic[j] = i[-1]
+            plt = show3Dfunction(first_matrix, points_into_the_graphic)
+            plt.show()
         third_window.mainloop()
     else:
 
@@ -344,7 +357,7 @@ def secondwindowfunction(first_window, matrix_function,dim):
         # Place it
         panel.place(x=80, y=250)
         # This is necesary to open the window
-
+    
     # The buttton
     button = Button(second_window, text="Next", command=lambda: calculate(
         second_window, matrices, changes, matrix_function, plt, dim, matrix_function))
