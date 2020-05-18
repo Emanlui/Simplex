@@ -13,7 +13,9 @@ ax = fig.gca(projection='3d')
 
 surf = ax.plot_surface(X, Y, Z)
 
-Z= X + 4*Y -4
+Z = (X - 4)/-4
 surf = ax.plot_surface(X, Y, Z)
+
+
 
 plt.show()

@@ -27,7 +27,9 @@ def show3Dfunction(functions, points_into_the_graphic):
 
     fig = plt.figure()
     ax = fig.add_subplot(111,projection='3d')
-
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
     x = np.linspace(-1,1,10)
     y = np.linspace(-1,1,10)
 
@@ -36,10 +38,17 @@ def show3Dfunction(functions, points_into_the_graphic):
     print(array_of_planes)
     for i in array_of_planes:
         
+        if i[2] == 0:
 
-        Z = (i[0]*X + i[1]*Y -i[3])/i[2]
-        print("(" + str(i[0])+ "*X " + str(i[1]) + "*Y " + str(-i[3]) + ")/" + str(i[2]))
-        surf = ax.plot_surface(X, Y, Z)
+            y = eval("(" + str(i[0]) + "-" + str(i[-1]) + "*x) / " + str(- i[1]))
+            #print("(" + str(functions[i][0]) + "-" + str(functions[i][-1]) + "*x) / " + str(- functions[i][1]))
+            #print(y)
+            plt.plot(x, y)
+        else:
+            Z = (i[0]*X + i[1]*Y -i[3])/i[2]
+            print("(" + str(i[0])+ "*X " + str(i[1]) + "*Y " + str(-i[3]) + ")/" + str(i[2]))
+            print(X)
+            surf = ax.plot_surface(X, Y, Z)
 
         
     ax.scatter(points_into_the_graphic[0],points_into_the_graphic[1], points_into_the_graphic[2], color='green')
