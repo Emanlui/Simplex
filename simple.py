@@ -29,8 +29,9 @@ def show3Dfunction(functions, points_into_the_graphic):
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
-    x = np.linspace(-1,1,10)
-    y = np.linspace(-1,1,10)
+    ax.grid()
+    x = np.linspace(-10000,10000,10)
+    y = np.linspace(-10000,10000,10)
 
     X,Y = np.meshgrid(x*100,y*100)
 
@@ -77,6 +78,7 @@ def show2Dfunction(functions):
     plt.xlabel('x - axis')
     plt.ylabel('y - axis')
     plt.title('The graph of the constraints')
+    plt.grid()
     #print(array_of_functions)
     for i in range(1,len(array_of_functions)):
         plt.fill_between(x,array_of_functions[0], array_of_functions[i], where=(array_of_functions[i] >= 0), facecolor='blue', alpha=0.2)
@@ -190,19 +192,22 @@ def destroywindow(third_window, matrices, changes, plt, matrix_function, dim, fi
 def return_result(matrix_function, dim, plt, first_matrix, third_window):
 
     list = []
-    point = [0] * 10
+    point = [0] * 20
     points_into_the_graphic = [0] * dim
-
+    point_2d = [0] * 20
     for i in matrix_function:
         for j in range(0, dim):
             if int(i[j]) == 1:
                 list.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
+                point_2d[j] = i[-1]
                 point[j] = Fraction(i[-1]).limit_denominator()
                 points_into_the_graphic[j] = i[-1]
     list.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
     
     if dim == 2:
-        plt.scatter(point[0], point[1], label='Result', color='r')
+        print(point_2d[0])
+        print(point_2d[1])
+        plt.scatter(point_2d[0], point_2d[1], label='Result', color='r')
         plt.savefig('result_graph.png')
 
     return list
