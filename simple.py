@@ -32,7 +32,7 @@ def show3Dfunction(functions, points_into_the_graphic):
     x = np.linspace(-1,1,10)
     y = np.linspace(-1,1,10)
 
-    X,Y = np.meshgrid(x,y)
+    X,Y = np.meshgrid(x*100,y*100)
 
     for i in array_of_planes:
         
