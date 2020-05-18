@@ -19,7 +19,6 @@ def show3Dfunction(functions, points_into_the_graphic):
         max_number = max(i[len(i) - 1], max_number)
 
     array_of_planes = []
-    print(functions)
     for i in range(0,length_of_matrix-1):
         plane = [functions[i][0],functions[i][1],functions[i][2], functions[i][-1]]
         array_of_planes.append(plane)
@@ -35,7 +34,6 @@ def show3Dfunction(functions, points_into_the_graphic):
 
     X,Y = np.meshgrid(x,y)
 
-    print(array_of_planes)
     for i in array_of_planes:
         
         if i[2] == 0:
@@ -46,8 +44,6 @@ def show3Dfunction(functions, points_into_the_graphic):
             plt.plot(x, y)
         else:
             Z = (i[0]*X + i[1]*Y -i[3])/i[2]
-            print("(" + str(i[0])+ "*X " + str(i[1]) + "*Y " + str(-i[3]) + ")/" + str(i[2]))
-            print(X)
             surf = ax.plot_surface(X, Y, Z)
 
         
@@ -152,10 +148,7 @@ def makechanges(matrix_function, matrices, changes):
 
     pivots = calculatepivots(matrix_function)
     pivot_number = matrix_function[pivots[0]][pivots[1]]
-
-    #print(pivot_number, pivots)
-    #imp(matrix_function)
-
+    
     flag = False
     
     for x in range(len(matrix_function)):
@@ -194,20 +187,20 @@ def destroywindow(third_window, matrices, changes, plt, matrix_function, dim, fi
 
     thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matrix)
 
-def return_result(matrix_function, dim, plt, first_matrix):
+def return_result(matrix_function, dim, plt, first_matrix, third_window):
 
     list = []
     point = [0] * 10
     points_into_the_graphic = [0] * 3
 
     for i in matrix_function:
-        for j in range(0,dim):
+        for j in range(0, dim):
             if int(i[j]) == 1:
                 list.append("X" + str(j+1) + "------>" + str(Fraction(i[-1]).limit_denominator()))
                 point[j] = Fraction(i[-1]).limit_denominator()
                 points_into_the_graphic[j] = i[-1]
     list.append("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
-    print("Resultado ------>" + str( Fraction(matrix_function[len(matrix_function)-1][len(matrix_function[0])-1]).limit_denominator() ))
+    
     if dim == 2:
         plt.scatter(point[0], point[1], label='Result', color='r')
         plt.savefig('result_graph.png')
@@ -232,8 +225,7 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matr
     third_window.geometry('{}x{}+{}+{}'.format(width + 800, height + 800, x - 300, y - 300))
     if matrices == []:
 
-
-        matrix_function = return_result(matrix_function, dim, plt, first_matrix)
+        matrix_function = return_result(matrix_function, dim, plt, first_matrix, third_window)
         for i in range(len(matrix_function)):
             function_label = Label(third_window, text=matrix_function[i])
             function_label.place(x=200, y=30*(i+1))
@@ -245,7 +237,7 @@ def thirdwindowfunction(matrices, changes, plt, matrix_function, dim, first_matr
             panel = Label(third_window, image=img)
             # Place it
             panel.place(x=150, y=300)
-
+        
         third_window.mainloop()
     else:
 
